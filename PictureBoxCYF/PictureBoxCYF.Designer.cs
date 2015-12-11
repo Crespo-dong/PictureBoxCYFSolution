@@ -60,10 +60,35 @@ namespace CYF.ImageProcessing.Tools
 
         #endregion
 
-        private static HImage _hSourceImage;
-        private HWindowControl _hWindowControl;
+        
+
+        // class HWindow
+        // Represents an instance of a HALCON window.
         private HWindow _hWindow;
+
+        // Provides a HALCON window for your Windows Forms application
+        // class HWindowControl : UserControl
+        // {
+        //    private HWindow window;
+        // }
+        private HWindowControl _hWindowControl;
+
+        // This class works as a wrapper class for the HALCON window
+        // HWindow. HWndCtrl is in charge of the visualization.
+        // You can move and zoom the visible image part by using GUI component 
+        // inputs or with the mouse. The class HWndCtrl uses a graphics stack 
+        // to manage the iconic objects for the display. Each object is linked 
+        // to a graphical context, which determines how the object is to be drawn.
+        // The context can be changed by calling changeGraphicSettings().
+        // The graphical "modes" are defined by the class GraphicsContext and 
+        // map most of the dev_set_* operators provided in HDevelop.
+        // class HWndCtrl
+        // {
+        //     private HWindowControl viewPort;
+        // }
         private HWndCtrl _hWndCtrl;
+
+        private static HImage _hSourceImage;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
     }
 }

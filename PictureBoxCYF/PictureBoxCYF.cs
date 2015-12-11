@@ -40,10 +40,9 @@ namespace CYF.ImageProcessing.Tools
                 _hSourceImage?.Dispose();
                 _hSourceImage = new HImage(imagePath);
                 _hWndCtrl.addIconicVar(_hSourceImage);
-
-                double scaleFactor;
-                Get1stScaleFactor(out scaleFactor);
-                _hWndCtrl.zoomImage(scaleFactor);
+                //double scaleFactor;
+                //Get1stScaleFactor(out scaleFactor);
+                //_hWndCtrl.zoomImage(scaleFactor);
                 _hWndCtrl.repaint();
                 Focus();
             }
@@ -86,9 +85,9 @@ namespace CYF.ImageProcessing.Tools
 
                 _hWndCtrl.addIconicVar(_hSourceImage);
 
-                double scaleFactor;
-                Get1stScaleFactor(out scaleFactor);
-                _hWndCtrl.zoomImage(scaleFactor);
+                //double scaleFactor;
+                //Get1stScaleFactor(out scaleFactor);
+                //_hWndCtrl.zoomImage(scaleFactor);
                 _hWndCtrl.repaint();
                 Focus();
             }
@@ -127,9 +126,9 @@ namespace CYF.ImageProcessing.Tools
 
                 _hWndCtrl.addIconicVar(_hSourceImage);
 
-                double scaleFactor;
-                Get1stScaleFactor(out scaleFactor);
-                _hWndCtrl.zoomImage(scaleFactor);
+                //double scaleFactor;
+                //Get1stScaleFactor(out scaleFactor);
+                //_hWndCtrl.zoomImage(scaleFactor);
                 _hWndCtrl.repaint();
                 Focus();
             }
@@ -142,24 +141,24 @@ namespace CYF.ImageProcessing.Tools
             return true;
         }
 
-        private void Get1stScaleFactor(out double scaleFactor)
-        {
-            scaleFactor = 1.0;
+        //private void Get1stScaleFactor(out double scaleFactor)
+        //{
+        //    scaleFactor = 1.0;
 
-            try
-            {
-                int imageWidth, imageHeight;
-                _hSourceImage.GetImageSize(out imageWidth, out imageHeight);
-                int row, column, windowWidth, windowHeight;
-                _hWindow.GetWindowExtents(out row, out column, out windowWidth, out windowHeight);
-                double wFactor = (double) imageWidth/windowWidth;
-                double hFactor = (double) imageHeight/windowHeight;
-                scaleFactor = wFactor < hFactor ? wFactor : hFactor;
-            }
-            catch (Exception exception)
-            {
-                _logger.Error("Get1stScaleFactor error" + "\r\n   " + exception);
-            }
-        }
+        //    try
+        //    {
+        //        int imageWidth, imageHeight;
+        //        _hSourceImage.GetImageSize(out imageWidth, out imageHeight);
+        //        int row, column, windowWidth, windowHeight;
+        //        _hWindow.GetWindowExtents(out row, out column, out windowWidth, out windowHeight);
+        //        double wFactor = (double)imageWidth / windowWidth;
+        //        double hFactor = (double)imageHeight / windowHeight;
+        //        scaleFactor = wFactor > hFactor ? wFactor : hFactor;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        _logger.Error("Get1stScaleFactor error" + "\r\n   " + exception);
+        //    }
+        //}
     }
 }

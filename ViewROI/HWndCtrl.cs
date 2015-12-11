@@ -1,24 +1,23 @@
-using System;
-using ViewROI;
-using System.Collections;
 using HalconDotNet;
-
-
+using System;
+using System.Collections;
+using ViewROI;
 
 namespace ViewROI
 {
     public delegate void IconicDelegate(int val);
+
     public delegate void FuncDelegate();
 
     /// <summary>
     /// This class works as a wrapper class for the HALCON window
     /// HWindow. HWndCtrl is in charge of the visualization.
-    /// You can move and zoom the visible image part by using GUI component 
-    /// inputs or with the mouse. The class HWndCtrl uses a graphics stack 
-    /// to manage the iconic objects for the display. Each object is linked 
+    /// You can move and zoom the visible image part by using GUI component
+    /// inputs or with the mouse. The class HWndCtrl uses a graphics stack
+    /// to manage the iconic objects for the display. Each object is linked
     /// to a graphical context, which determines how the object is to be drawn.
     /// The context can be changed by calling changeGraphicSettings().
-    /// The graphical "modes" are defined by the class GraphicsContext and 
+    /// The graphical "modes" are defined by the class GraphicsContext and
     /// map most of the dev_set_* operators provided in HDevelop.
     /// </summary>
     public class HWndCtrl
@@ -35,34 +34,33 @@ namespace ViewROI
         /// <summary>Magnification is performed on mouse events</summary>
         public const int MODE_VIEW_ZOOMWINDOW = 13;
 
-
         public const int MODE_INCLUDE_ROI = 1;
 
         public const int MODE_EXCLUDE_ROI = 2;
-
 
         /// <summary>
         /// Constant describes delegate message to signal new image
         /// </summary>
         public const int EVENT_UPDATE_IMAGE = 31;
+
         /// <summary>
         /// Constant describes delegate message to signal error
         /// when reading an image from file
         /// </summary>
         public const int ERR_READING_IMG = 32;
-        /// <summary> 
+
+        /// <summary>
         /// Constant describes delegate message to signal error
         /// when defining a graphical context
         /// </summary>
         public const int ERR_DEFINING_GC = 33;
 
-        /// <summary> 
-        /// Maximum number of HALCON objects that can be put on the graphics 
-        /// stack without loss. For each additional object, the first entry 
+        /// <summary>
+        /// Maximum number of HALCON objects that can be put on the graphics
+        /// stack without loss. For each additional object, the first entry
         /// is removed from the stack again.
         /// </summary>
         private const int MAXNUMOBJLIST = 50;
-
 
         private int stateView;
         private bool mousePressed = false;
@@ -76,11 +74,10 @@ namespace ViewROI
         /// </summary>
         private ROIController roiManager;
 
-        /* dispROI is a flag to know when to add the ROI models to the 
-		   paint routine and whether or not to respond to mouse events for 
+        /* dispROI is a flag to know when to add the ROI models to the
+		   paint routine and whether or not to respond to mouse events for
 		   ROI objects */
         private int dispROI;
-
 
         /* Basic parameters, like dimension of window and displayed image part */
         private int windowWidth;
@@ -91,22 +88,20 @@ namespace ViewROI
         private int[] CompRangeX;
         private int[] CompRangeY;
 
-
         private int prevCompX, prevCompY;
         private double stepSizeX, stepSizeY;
 
-
-        /* Image coordinates, which describe the image part that is displayed  
+        /* Image coordinates, which describe the image part that is displayed
 		   in the HALCON window */
         private double ImgRow1, ImgCol1, ImgRow2, ImgCol2;
 
         /// <summary>Error message when an exception is thrown</summary>
         public string exceptionText = "";
 
-
         /* Delegates to send notification messages to other classes */
+
         /// <summary>
-        /// Delegate to add information to the HALCON window after 
+        /// Delegate to add information to the HALCON window after
         /// the paint routine has finished
         /// </summary>
         public FuncDelegate addInfoDelegate;
@@ -116,16 +111,14 @@ namespace ViewROI
         /// </summary>
         public IconicDelegate NotifyIconObserver;
 
-
         private HWindow ZoomWindow;
         private double zoomWndFactor;
         private double zoomAddOn;
         private int zoomWndSize;
 
-
-        /// <summary> 
-        /// List of HALCON objects to be drawn into the HALCON window. 
-        /// The list shouldn't contain more than MAXNUMOBJLIST objects, 
+        /// <summary>
+        /// List of HALCON objects to be drawn into the HALCON window.
+        /// The list shouldn't contain more than MAXNUMOBJLIST objects,
         /// otherwise the first entry is removed from the list.
         /// </summary>
         private ArrayList HObjList;
@@ -133,14 +126,13 @@ namespace ViewROI
         /// <summary>
         /// Instance that describes the graphical context for the
         /// HALCON window. According on the graphical settings
-        /// attached to each HALCON object, this graphical context list 
+        /// attached to each HALCON object, this graphical context list
         /// is updated constantly.
         /// </summary>
         private GraphicsContext mGC;
 
-
-        /// <summary> 
-        /// Initializes the image dimension, mouse delegation, and the 
+        /// <summary>
+        /// Initializes the image dimension, mouse delegation, and the
         /// graphical context setup of the instance.
         /// </summary>
         /// <param name="view"> HALCON window </param>
@@ -171,26 +163,24 @@ namespace ViewROI
             addInfoDelegate = new FuncDelegate(dummyV);
             NotifyIconObserver = new IconicDelegate(dummy);
 
-            // graphical stack 
+            // graphical stack
             HObjList = new ArrayList(20);
             mGC = new GraphicsContext();
             mGC.gcNotification = new GCDelegate(exceptionGC);
         }
 
-
         /// <summary>
-        /// Registers an instance of an ROIController with this window 
+        /// Registers an instance of an ROIController with this window
         /// controller (and vice versa).
         /// </summary>
-        /// <param name="rC"> 
-        /// Controller that manages interactive ROIs for the HALCON window 
+        /// <param name="rC">
+        /// Controller that manages interactive ROIs for the HALCON window
         /// </param>
         public void useROIController(ROIController rC)
         {
             roiManager = rC;
             rC.setViewController(this);
         }
-
 
         /// <summary>
         /// Read dimensions of the image to adjust own window settings
@@ -205,9 +195,8 @@ namespace ViewROI
             setImagePart(0, 0, h, w);
         }
 
-
         /// <summary>
-        /// Adjust window settings by the values supplied for the left 
+        /// Adjust window settings by the values supplied for the left
         /// upper corner and the right lower corner
         /// </summary>
         /// <param name="r1">y coordinate of left upper corner</param>
@@ -229,7 +218,6 @@ namespace ViewROI
             viewPort.ImagePart = rect;
         }
 
-
         /// <summary>
         /// Sets the view mode for mouse events in the HALCON window
         /// (zoom, move, magnify or none).
@@ -244,6 +232,7 @@ namespace ViewROI
         }
 
         /********************************************************************/
+
         private void dummy(int val)
         {
         }
@@ -253,6 +242,7 @@ namespace ViewROI
         }
 
         /*******************************************************************/
+
         private void exceptionGC(string message)
         {
             exceptionText = message;
@@ -260,7 +250,7 @@ namespace ViewROI
         }
 
         /// <summary>
-        /// Paint or don't paint the ROIs into the HALCON window by 
+        /// Paint or don't paint the ROIs into the HALCON window by
         /// defining the parameter to be equal to 1 or not equal to 1.
         /// </summary>
         public void setDispLevel(int mode)
@@ -271,6 +261,7 @@ namespace ViewROI
         /****************************************************************************/
         /*                          graphical element                               */
         /****************************************************************************/
+
         private void zoomImage(double x, double y, double scale)
         {
             double lengthC, lengthR;
@@ -304,7 +295,7 @@ namespace ViewROI
         }
 
         /// <summary>
-        /// Scales the image in the HALCON window according to the 
+        /// Scales the image in the HALCON window according to the
         /// value scaleFactor
         /// </summary>
         public void zoomImage(double scaleFactor)
@@ -328,7 +319,6 @@ namespace ViewROI
             zoomImage(midPointX, midPointY, scaleFactor);
         }
 
-
         /// <summary>
         /// Scales the HALCON window according to the value scale
         /// </summary>
@@ -347,9 +337,9 @@ namespace ViewROI
         }
 
         /// <summary>
-        /// Recalculates the image-window-factor, which needs to be added to 
-        /// the scale factor for zooming an image. This way the zoom gets 
-        /// adjusted to the window-image relation, expressed by the equation 
+        /// Recalculates the image-window-factor, which needs to be added to
+        /// the scale factor for zooming an image. This way the zoom gets
+        /// adjusted to the window-image relation, expressed by the equation
         /// imageWidth/viewPort.Width.
         /// </summary>
         public void setZoomWndFactor()
@@ -366,6 +356,7 @@ namespace ViewROI
         }
 
         /*******************************************************************/
+
         private void moveImage(double motionX, double motionY)
         {
             ImgRow1 += -motionY;
@@ -382,9 +373,8 @@ namespace ViewROI
             repaint();
         }
 
-
         /// <summary>
-        /// Resets all parameters that concern the HALCON window display 
+        /// Resets all parameters that concern the HALCON window display
         /// setup to their initial values and clears the ROI list.
         /// </summary>
         public void resetAll()
@@ -402,7 +392,6 @@ namespace ViewROI
             rect.Width = (int)imageWidth;
             rect.Height = (int)imageHeight;
             viewPort.ImagePart = rect;
-
 
             if (roiManager != null)
                 roiManager.reset();
@@ -424,7 +413,6 @@ namespace ViewROI
             rect.Height = (int)imageHeight;
             viewPort.ImagePart = rect;
         }
-
 
         /*************************************************************************/
         /*      			 Event handling for mouse	   	                     */
@@ -464,6 +452,7 @@ namespace ViewROI
                         startX = e.X;
                         startY = e.Y;
                         break;
+
                     case MODE_VIEW_ZOOM:
                         if (e.Button == System.Windows.Forms.MouseButtons.Left)
                             scale = 0.9;
@@ -471,11 +460,14 @@ namespace ViewROI
                             scale = 1 / 0.9;
                         zoomImage(e.X, e.Y, scale);
                         break;
+
                     case MODE_VIEW_NONE:
                         break;
+
                     case MODE_VIEW_ZOOMWINDOW:
                         activateZoomWindow((int)e.X, (int)e.Y);
                         break;
+
                     default:
                         break;
                 }
@@ -484,6 +476,7 @@ namespace ViewROI
         }
 
         /*******************************************************************/
+
         private void activateZoomWindow(int X, int Y)
         {
             double posX, posY;
@@ -508,6 +501,7 @@ namespace ViewROI
         }
 
         /*******************************************************************/
+
         private void mouseUp(object sender, HalconDotNet.HMouseEventArgs e)
         {
             mousePressed = false;
@@ -525,12 +519,12 @@ namespace ViewROI
         }
 
         /*******************************************************************/
+
         private void mouseMoved(object sender, HalconDotNet.HMouseEventArgs e)
         {
             double motionX, motionY;
             double posX, posY;
             double zoomZone;
-
 
             if (!mousePressed)
                 return;
@@ -556,7 +550,6 @@ namespace ViewROI
                 HSystem.SetSystem("flush_graphic", "false");
                 ZoomWindow.ClearWindow();
 
-
                 posX = ((e.X - ImgCol1) / (ImgCol2 - ImgCol1)) * viewPort.Width;
                 posY = ((e.Y - ImgRow1) / (ImgRow2 - ImgRow1)) * viewPort.Height;
                 zoomZone = (zoomWndSize / 2) * zoomWndFactor * zoomAddOn;
@@ -575,10 +568,10 @@ namespace ViewROI
 
         /// <summary>
         /// To initialize the move function using a GUI component, the HWndCtrl
-        /// first needs to know the range supplied by the GUI component. 
-        /// For the x direction it is specified by xRange, which is 
+        /// first needs to know the range supplied by the GUI component.
+        /// For the x direction it is specified by xRange, which is
         /// calculated as follows: GuiComponentX.Max()-GuiComponentX.Min().
-        /// The starting value of the GUI component has to be supplied 
+        /// The starting value of the GUI component has to be supplied
         /// by the parameter Init
         /// </summary>
         public void setGUICompRangeX(int[] xRange, int Init)
@@ -589,15 +582,14 @@ namespace ViewROI
             cRangeX = xRange[1] - xRange[0];
             prevCompX = Init;
             stepSizeX = ((double)imageWidth / cRangeX) * (imageWidth / windowWidth);
-
         }
 
         /// <summary>
         /// To initialize the move function using a GUI component, the HWndCtrl
-        /// first needs to know the range supplied by the GUI component. 
-        /// For the y direction it is specified by yRange, which is 
+        /// first needs to know the range supplied by the GUI component.
+        /// For the y direction it is specified by yRange, which is
         /// calculated as follows: GuiComponentY.Max()-GuiComponentY.Min().
-        /// The starting value of the GUI component has to be supplied 
+        /// The starting value of the GUI component has to be supplied
         /// by the parameter Init
         /// </summary>
         public void setGUICompRangeY(int[] yRange, int Init)
@@ -609,7 +601,6 @@ namespace ViewROI
             prevCompY = Init;
             stepSizeY = ((double)imageHeight / cRangeY) * (imageHeight / windowHeight);
         }
-
 
         /// <summary>
         /// Resets to the starting value of the GUI component.
@@ -636,7 +627,6 @@ namespace ViewROI
             prevCompX = valX;
         }
 
-
         /// <summary>
         /// Moves the image by the value valY supplied by the GUI component
         /// </summary>
@@ -660,8 +650,6 @@ namespace ViewROI
         {
             double x, y, scale;
             double prevScaleC;
-
-
 
             x = (ImgCol1 + (ImgCol2 - ImgCol1) / 2);
             y = (ImgRow1 + (ImgRow2 - ImgRow1) / 2);
@@ -710,8 +698,6 @@ namespace ViewROI
             window.DispLine(-100.0, -100.0, -101.0, -101.0);
         }
 
-
-
         /********************************************************************/
         /*                      GRAPHICSSTACK                               */
         /********************************************************************/
@@ -724,18 +710,17 @@ namespace ViewROI
         public void addIconicVar(HObject obj)
         {
             HObjectEntry entry;
+            if (obj == null) return;
 
-            if (obj == null)
-                return;
-
-            if (obj is HImage)
+            var image = obj as HImage;
+            if (image != null)
             {
                 double r, c;
                 int h, w, area;
                 string s;
 
-                area = ((HImage)obj).GetDomain().AreaCenter(out r, out c);
-                ((HImage)obj).GetImagePointer1(out s, out w, out h);
+                area = image.GetDomain().AreaCenter(out r, out c);
+                image.GetImagePointer1(out s, out w, out h);
 
                 if (area == (w * h))
                 {
@@ -746,7 +731,8 @@ namespace ViewROI
                         imageHeight = h;
                         imageWidth = w;
                         zoomWndFactor = (double)imageWidth / viewPort.Width;
-                        setImagePart(0, 0, h, w);
+                        int d = w < h ? w : h;
+                        setImagePart(0, 0, d, d);
                     }
                 }//if
             }//if
@@ -759,9 +745,8 @@ namespace ViewROI
                 HObjList.RemoveAt(1);
         }
 
-
         /// <summary>
-        /// Clears all entries from the graphics stack 
+        /// Clears all entries from the graphics stack
         /// </summary>
         public void clearList()
         {
@@ -782,12 +767,12 @@ namespace ViewROI
         /// </summary>
         /// <param name="mode">
         /// Constant that is provided by the class GraphicsContext
-        /// and describes the mode that has to be changed, 
+        /// and describes the mode that has to be changed,
         /// e.g., GraphicsContext.GC_COLOR
         /// </param>
         /// <param name="val">
-        /// Value, provided as a string, 
-        /// the mode is to be changed to, e.g., "blue" 
+        /// Value, provided as a string,
+        /// the mode is to be changed to, e.g., "blue"
         /// </param>
         public void changeGraphicSettings(string mode, string val)
         {
@@ -796,18 +781,23 @@ namespace ViewROI
                 case GraphicsContext.GC_COLOR:
                     mGC.setColorAttribute(val);
                     break;
+
                 case GraphicsContext.GC_DRAWMODE:
                     mGC.setDrawModeAttribute(val);
                     break;
+
                 case GraphicsContext.GC_LUT:
                     mGC.setLutAttribute(val);
                     break;
+
                 case GraphicsContext.GC_PAINT:
                     mGC.setPaintAttribute(val);
                     break;
+
                 case GraphicsContext.GC_SHAPE:
                     mGC.setShapeAttribute(val);
                     break;
+
                 default:
                     break;
             }
@@ -819,12 +809,12 @@ namespace ViewROI
         /// </summary>
         /// <param name="mode">
         /// Constant that is provided by the class GraphicsContext
-        /// and describes the mode that has to be changed, 
+        /// and describes the mode that has to be changed,
         /// e.g., GraphicsContext.GC_LINEWIDTH
         /// </param>
         /// <param name="val">
-        /// Value, provided as an integer, the mode is to be changed to, 
-        /// e.g., 5 
+        /// Value, provided as an integer, the mode is to be changed to,
+        /// e.g., 5
         /// </param>
         public void changeGraphicSettings(string mode, int val)
         {
@@ -833,9 +823,11 @@ namespace ViewROI
                 case GraphicsContext.GC_COLORED:
                     mGC.setColoredAttribute(val);
                     break;
+
                 case GraphicsContext.GC_LINEWIDTH:
                     mGC.setLineWidthAttribute(val);
                     break;
+
                 default:
                     break;
             }
@@ -847,11 +839,11 @@ namespace ViewROI
         /// </summary>
         /// <param name="mode">
         /// Constant that is provided by the class GraphicsContext
-        /// and describes the mode that has to be changed, 
+        /// and describes the mode that has to be changed,
         /// e.g.,  GraphicsContext.GC_LINESTYLE
         /// </param>
         /// <param name="val">
-        /// Value, provided as an HTuple instance, the mode is 
+        /// Value, provided as an HTuple instance, the mode is
         /// to be changed to, e.g., new HTuple(new int[]{2,2})
         /// </param>
         public void changeGraphicSettings(string mode, HTuple val)
@@ -861,6 +853,7 @@ namespace ViewROI
                 case GraphicsContext.GC_LINESTYLE:
                     mGC.setLineStyleAttribute(val);
                     break;
+
                 default:
                     break;
             }
@@ -881,6 +874,5 @@ namespace ViewROI
         {
             return mGC.copyContextList();
         }
-
     }//end of class
 }//end of namespace
